@@ -1,0 +1,23 @@
+@extends('layout')
+
+@section('title', 'Crear Post')
+
+@section('content')
+    <h1 class="mb-4">Crear Post</h1>
+    
+    <div class="card p-4">
+        <form action="{{ route('posts.store') }}" method="POST">
+            @csrf
+            <div class="mb-3">
+                <label for="titulo" class="form-label">Título:</label>
+                <input type="text" name="titulo" id="titulo" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="contenido" class="form-label">Contenido:</label>
+                <textarea name="contenido" id="contenido" class="form-control" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a href="{{ route('posts.index') }}" class="btn btn-secondary">Volver</a>
+        </form>
+    </div>
+@endsection

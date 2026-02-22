@@ -1,0 +1,73 @@
+GUÍA DE ESTUDIO: LARAVEL PARA PRINCIPIANTES (PROYECTO AZKERNIA)
+
+Esta guía explica qué hemos hecho en el proyecto, para qué sirve cada comando y cómo entender los conceptos que más cuestan.
+
+-------------------------------------------------------------------------------
+1. EL CORAZÓN DE TODO: ARTISAN
+-------------------------------------------------------------------------------
+'Artisan' es la herramienta de línea de comandos de Laravel. Casi todo se crea con 'php artisan make:...'.
+
+Comandos que usamos:
+- 'php artisan serve': Enciende un servidor local para que puedas ver tu web en el navegador (normalmente en localhost:8000).
+- 'php artisan make:model Name': Crea el archivo del Modelo.
+- 'php artisan migrate': Lee tus archivos de migración y crea las tablas reales en MySQL.
+
+-------------------------------------------------------------------------------
+2. LAS MIGRACIONES (EL "PLANO" DE LA BASE DE DATOS)
+-------------------------------------------------------------------------------
+¿QUÉ SON?: Imagina que las migraciones son como los planos de una casa. No son la casa en sí (la base de datos), sino las instrucciones para construirla.
+¿PARA QUÉ SIRVEN?: Permiten que si trabajas con otra persona, ella solo tenga que ejecutar un comando para tener exactamente las mismas tablas que tú, sin pasarle un archivo .sql.
+
+Archivo importante: 'database/migrations/xxxx_create_posts_table.php'
+- Método 'up()': Aquí dices qué columnas quieres (ej: $table->string('titulo')).
+- Método 'down()': Dice qué hacer si quieres deshacer el cambio (normalmente borrar la tabla).
+
+Comando clave:
+- 'php artisan migrate': Es como darle al botón de "Construir" en el plano.
+
+-------------------------------------------------------------------------------
+3. LOS MODELOS (EL TRADUCTOR)
+-------------------------------------------------------------------------------
+¿QUÉ SON?: Un Modelo es una clase de PHP que representa una tabla de tu base de datos.
+¿PARA QUÉ SIRVEN?: Sirven para hablar con la base de datos usando código PHP en lugar de escribir SQL aburrido. Esto se llama Eloquent ORM.
+
+Ejemplo:
+- En lugar de: "SELECT * FROM posts WHERE id = 1;"
+- En el Modelo haces: "$post = Post::find(1);" -> ¡Mucho más fácil!
+
+Conceptos clave dentro del Modelo:
+- '$fillable': Es una lista de qué campos permites que el usuario rellene (por seguridad).
+- 'Relaciones':
+    - En Post.php pusimos: 'return $this->hasMany(Comment::class);' (Un post TIENE MUCHOS comentarios).
+    - En Comment.php pusimos: 'return $this->belongsTo(Post::class);' (Un comentario PERTENECE A un post).
+
+-------------------------------------------------------------------------------
+4. FACTORIES Y SEEDERS (DATOS DE PRUEBA)
+-------------------------------------------------------------------------------
+¿QUÉ SON?:
+- Factory (Fábrica): Es una receta para crear datos falsos (ej: "Dime que un post tiene un título de 5 palabras y un texto largo").
+- Seeder (Sembrador): Es el que ejecuta la orden de plantar esos datos en la tabla.
+
+¿PARA QUÉ SIRVEN?: Para no tener que escribir a mano 50 posts para probar si la paginación o el diseño funcionan bien.
+
+Comando:
+- 'php artisan db:seed --class=PostSeeder': Planta los 50 posts que programamos.
+
+-------------------------------------------------------------------------------
+5. EL FLUJO DE UNA PETICIÓN (CÓMO FUNCIONA LA WEB)
+-------------------------------------------------------------------------------
+Cuando tú escribes 'localhost:8000/posts' en el navegador, pasa esto:
+
+1. RUTA (routes/web.php): Laravel mira la URL y dice: "Ah, quieres /posts. Te mando al PostController, al método index".
+2. CONTROLADOR (app/Http/Controllers/PostController.php): El controlador dice: "Vale, necesito los posts. ¡Modelo Post, dame todos!".
+3. MODELO (app/Models/Post.php): El modelo va a la base de datos, trae los posts y se los devuelve al controlador.
+4. CONTROLADOR (de nuevo): El controlador coge esos posts y dice: "Vista index.blade.php, aquí tienes los datos, dibújalos".
+5. VISTA (resources/views/posts/index.blade.php): La vista genera el HTML y el usuario ve la página.
+
+-------------------------------------------------------------------------------
+RESUMEN DE COMANDOS PARA EL EXAMEN/DEFENSA:
+-------------------------------------------------------------------------------
+1. 'php artisan make:model Post -m' -> Crea el modelo Y la migración a la vez (la -m es la clave).
+2. 'php artisan migrate' -> Crea las tablas.
+3. 'php artisan make:controller PostController --resource' -> Crea un controlador con los métodos CRUD ya escritos (index, create, store, etc.).
+4. 'php artisan route:list' -> (Extra) Te enseña todas las URLs que tiene tu aplicación.
